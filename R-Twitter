@@ -1,0 +1,76 @@
+##Datenbanken laden
+library(SocialMediaLab)
+library(twitteR)
+require(magrittr)
+require(twitteR)
+
+# Setzen des Directories
+setwd("C:/Users/sched/Documents/R/output")
+
+
+##Authentifizierung von Twitter über API oauth iniziieren
+myAppID <- ""
+myAppSecret <- ""
+myAccessToken <- ""
+myAccessSecret <- ""
+setup_twitter_oauth(myAppID, myAppSecret, myAccessToken, myAccessSecret)
+
+## [1] "Using direct authentication" umstellen, damit es wieder läuft?
+
+## Daten festlegen: KW3
+startDate_1 <- '2018/01/15'
+endDate_1 <- '2018/01/21'
+
+## Daten festlegen: KW6
+startDate_2 <- '2018/02/05'
+endDate_2 <- '2018/02/11'
+
+## Quelldatei für Anbieternamen als Liste
+nameList = readLines("C:/Users/sched/Dropbox/Projects/2018_BAKOM/Daten/Facebook_Liste.csv")
+
+# Setzen des Directories
+setwd("D:/Users/msched/Documents/R_Output")
+
+## Definition der Funktion zum auslesen der Post-Daten
+fun_get_data <- function(pageName)
+{
+## Ziehen der Daten
+user <- userTimeline(pageName,n=1000)
+
+##Dataframe anlegen
+dataFrame <- do.call(rbind, lapply(user, function(x) x$toDataFrame()))
+newdata <- dataFrame[ which((dataFrame$created >= startDate_1 & dataFrame$created < endDate_1) | (dataFrame$created >= startDate_2 & dataFrame$created < endDate_2)), ]
+
+##In eine CSV schreiben
+dateiName <- paste("Twitter_Daten.csv", sep="")
+write.table(newdata,file=dateiName, append = TRUE,quote = TRUE, sep = ";", col.names = FALSE)
+}
+
+## Definition der Funktion zum auslesen der Seiten-Daten
+fun_get_follower <- function(userNameFun)
+{
+userPage <- getUser(userNameFun)
+dataFrame_2 <- userPage$toDataFrame()
+dateiNameFollower <- paste("Twitter_Daten_Follower.csv", sep="")
+write.table(dataFrame_2,file=dateiNameFollower, append = TRUE,quote = TRUE, sep = ";", col.names = FALSE)
+}
+
+
+##Ausführen von fun_get_data für alle Elemente der Liste
+for (i in 1:length(nameList)){
+  if (nameList[i]!=""){
+    fun_get_data(nameList[i])
+	print(paste(nameList[i], " - Datei aktualisiert", sep=""))
+  }
+}
+
+##Ausführen von fun_get_follower für alle Elemente der Liste
+for (i in 1:length(nameList)){
+  if (nameList[i]!=""){
+    fun_get_follower(nameList[i])
+	print(paste(nameList[i], " - Follower-Datei aktualisiert", sep=""))
+  }
+}
+
+
+##----------
