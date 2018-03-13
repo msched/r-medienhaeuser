@@ -1,0 +1,57 @@
+##Datenbanken laden
+library(SocialMediaLab)
+library(Rfacebook)
+require(magrittr)
+require(Rfacebook)
+
+# Setzen des Directories
+setwd("C:/Users/sched/Documents/R/output")
+
+##Authentifizierung von Facebook über API oauth iniziieren
+myAppID <- ""
+myAppSecret <- ""
+fb_oauth <- fbOAuth(app_id=myAppID, app_secret=myAppSecret)
+fb_token <- ""
+
+##-----------------------------------------------------
+
+## Daten festlegen: KW3
+startDate_1 <- '2018/01/15'
+endDate_1 <- '2018/01/21'
+## Daten festlegen: KW6
+startDate_2 <- '2018/02/05'
+endDate_2 <- '2018/02/11'
+
+## Quelldatei für Anbieternamen als Liste
+nameList = readLines("C:/Users/sched/Dropbox/Projects/2018_BAKOM/Daten/Facebook_Liste.csv")
+
+## Definition der Funktion zum auslesen...
+fun_get_data <- function(pageName, startDate, endDate)
+{
+## Ziehen der Daten
+page <- getPage(page=pageName, token=fb_token, n=1000, since=startDate, until=endDate)
+
+## ...und zum in die CSV schreiben 
+dateiName <- paste("Facebook_Daten.csv", sep="")
+write.table(page,file=dateiName, append = TRUE,quote = TRUE, sep = ";", col.names = FALSE)
+}
+
+##Ausführen der Funktion für alle Elemente der Liste
+for (i in 1:length(nameList)){
+  if (nameList[i]!=""){
+    ## Datenabzug iterierend durch Namensliste für Zeitraum 1
+	fun_get_data(nameList[i], startDate_1, endDate_1)
+	print(paste(nameList[i], " - Datei aktualisiert KW3", sep=""))
+	
+	## Datenabzug iterierend durch Namensliste für Zeitraum 2
+	fun_get_data(nameList[i], startDate_2, endDate_2)
+	print(paste(nameList[i], " - Datei aktualisiert KW6", sep=""))
+  }
+}
+
+
+
+
+##------------
+
+##dateiName <- paste(pageName,"_Facebook.csv", sep="")
