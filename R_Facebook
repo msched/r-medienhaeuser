@@ -5,25 +5,25 @@ require(magrittr)
 require(Rfacebook)
 
 # Setzen des Directories
-setwd("C:/Users/sched/Documents/R/output")
+setwd("C:/Users/zzz")
 
 ##Authentifizierung von Facebook über API oauth iniziieren
-myAppID <- ""
-myAppSecret <- ""
+myAppID <- "1414718028559718"
+myAppSecret <- "zzz"
 fb_oauth <- fbOAuth(app_id=myAppID, app_secret=myAppSecret)
-fb_token <- ""
+fb_token <- "zzz"
 
 ##-----------------------------------------------------
 
 ## Daten festlegen: KW3
-startDate_1 <- '2018/01/15'
-endDate_1 <- '2018/01/21'
+startDate_1 <- '2018/10/15'
+endDate_1 <- '2018/10/21'
 ## Daten festlegen: KW6
-startDate_2 <- '2018/02/05'
-endDate_2 <- '2018/02/11'
+startDate_2 <- '2018/10/05'
+endDate_2 <- '2018/10/11'
 
 ## Quelldatei für Anbieternamen als Liste
-nameList = readLines("C:/Users/sched/Dropbox/Projects/2018_BAKOM/Daten/Facebook_Liste.csv")
+nameList = readLines("C:/Users/zzz.csv")
 
 ## Definition der Funktion zum auslesen...
 fun_get_data <- function(pageName, startDate, endDate)
@@ -32,7 +32,7 @@ fun_get_data <- function(pageName, startDate, endDate)
 page <- getPage(page=pageName, token=fb_token, n=1000, since=startDate, until=endDate)
 
 ## ...und zum in die CSV schreiben 
-dateiName <- paste("Facebook_Daten.csv", sep="")
+dateiName <- paste("C:/Users/sched/Dropbox/Projects/201802_BAKOM/Daten/Facebook_Daten2.csv", sep="")
 write.table(page,file=dateiName, append = TRUE,quote = TRUE, sep = ";", col.names = FALSE)
 }
 
@@ -46,6 +46,7 @@ for (i in 1:length(nameList)){
 	## Datenabzug iterierend durch Namensliste für Zeitraum 2
 	fun_get_data(nameList[i], startDate_2, endDate_2)
 	print(paste(nameList[i], " - Datei aktualisiert KW6", sep=""))
+
   }
 }
 
